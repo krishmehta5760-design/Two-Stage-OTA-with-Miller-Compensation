@@ -1,0 +1,71 @@
+* ============================================================
+* Testbench: Open-Loop AC Analysis (Gain & Phase Margin)
+* 2-Stage OTA with Miller Compensation
+* ============================================================
+*
+* Method: Inductor-feedback trick
+*   - DC:  Lfb shorts Vout to Vin-, setting the DC operating
+*          point (unity-gain feedback at DC).
+*   - AC:  Lfb impedance >> Rout, so Vin- is an AC ground.
+*          Full open-loop gain is measured at Vout.
+*
+* Expected results (hand calculation):
+*   DC Gain  ~ 91 dB
+*   GBW      ~ 30 MHz
+*   PM       ~ 66 deg  (no nulling resistor; RHP zero at 127 MHz)
+*
+* Plotting:
+*   Right-click plot -> Add Trace -> Vdb(vout) for gain (dB)
+*   Right-click plot -> Add Trace -> Vp(vout)  for phase (deg)
+*
+* ============================================================
+
+* ---- Include Models and Subcircuit ----
+.include models_180nm.lib
+.include two_stage_ota.sub
+
+* ---- Power Supply ----
+VDD  vdd  0  DC  1.8
+VSS  vss  0  DC  0
+
+* ---- OTA Instance ----
+Xota  inp  inm  vout  vdd  vss  two_stage_ota
+
+* ---- AC Input Signal ----
+* Small-signal AC stimulus on non-inverting input
+* DC bias at mid-rail (0.9 V)
+Vac  inp  0  DC  0.9  AC  1
+
+* ---- DC Feedback for Operating Point ----
+* Large inductor: behaves as a short at DC (sets operating point)
+* and as an open circuit at AC (preserves open-loop measurement).
+*
+* At f = 1 Hz:  |Z_L| = 2*pi*1*1e6 = 6.28 MOhm >> Rout (100 kOhm)
+Lfb  vout  inm  1Meg
+
+* ---- Load Capacitance ----
+CL  vout  0  2p
+
+* ---- AC Analysis ----
+* Sweep from 1 Hz to 1 GHz, 100 points per decade
+.ac  dec  100  1  1G
+
+* ---- Automated Measurements ----
+* DC gain (magnitude at 10 Hz, essentially DC)
+.meas AC  dc_gain_mag   FIND  mag(V(vout))   AT=10
+.meas AC  dc_gain_db    PARAM 20*log10(dc_gain_mag)
+
+* Unity-gain frequency (GBW)
+.meas AC  GBW  WHEN  mag(V(vout))=1  FALL=1
+
+* Phase at unity-gain frequency
+.meas AC  phase_at_ugf  FIND  Vp(vout)  WHEN  mag(V(vout))=1  FALL=1
+
+* Phase margin = 180 + phase_at_ugf
+* (phase_at_ugf will be negative, e.g., -110 deg -> PM = 70 deg)
+.meas AC  phase_margin  PARAM  180+phase_at_ugf
+
+* ---- Solver Options ----
+.options plotwinsize=0
+.backanno
+.end

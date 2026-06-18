@@ -1,0 +1,77 @@
+* ============================================================
+* 2-Stage OTA with Miller Compensation — 8-Transistor Topology
+* ============================================================
+* Process:  TSMC 180nm (Level-1 Approximation)
+* VDD:      1.8 V
+* Power:    279 uW (typ)
+* DC Gain:  ~91 dB
+* GBW:      30 MHz
+* PM:       ~60 deg (no nulling resistor)
+* SR:       20 V/us
+* CL:       2 pF (external, not included here)
+*
+* Pins:
+*   inp  — Non-inverting input  (V+)
+*   inm  — Inverting input      (V-)
+*   vout — Output
+*   vdd  — Positive supply
+*   vss  — Ground / negative supply
+*
+* Requires: models_180nm.lib (or TSMC 180nm PDK models)
+* ============================================================
+
+.SUBCKT two_stage_ota  inp inm vout vdd vss
+
+* ===========================================================
+* FIRST STAGE: NMOS Differential Pair + PMOS Active Load
+* ===========================================================
+
+* M1, M2: NMOS differential input pair
+* ID = 25 uA each, VOV = 106 mV, gm = 471 uA/V
+M1  net1  inm  nds  vss  nmos180  W=17u  L=1u
+M2  net2  inp  nds  vss  nmos180  W=17u  L=1u
+
+* M3, M4: PMOS current mirror active load
+* ID = 25 uA each, |VOV| = 200 mV
+* M3 is diode-connected (gate = drain)
+M3  net1  net1  vdd  vdd  pmos180  W=21u  L=1u
+M4  net2  net1  vdd  vdd  pmos180  W=21u  L=1u
+
+* M5: NMOS tail current source
+* ID = 50 uA, VOV = 200 mV
+* Biased by NMOS mirror from M8
+M5  nds  nbias  vss  vss  nmos180  W=10u  L=1u
+
+* ===========================================================
+* SECOND STAGE: Common-Source PMOS Amplifier
+* ===========================================================
+
+* M6: PMOS common-source amplifier (Wide to boost gm without Rz)
+* ID = 100 uA, |VOV| = ~103 mV, gm = ~1940 uA/V
+M6  vout  net2  vdd  vdd  pmos180  W=314u L=1u
+
+* M7: NMOS current source load
+* ID = 100 uA, VOV = 200 mV
+* Biased by the same NMOS mirror (M8) as the tail current
+M7  vout  nbias  vss  vss  nmos180  W=20u  L=1u
+
+* ===========================================================
+* MILLER COMPENSATION (no nulling resistor)
+* ===========================================================
+*
+* Cc: Miller compensation capacitor
+*     Cc = I5/SR = 50u/20e6 = 2.5 pF
+Cc  vout  net2  2.5p
+
+* ===========================================================
+* BIAS CIRCUIT (Single Branch)
+* ===========================================================
+
+* --- NMOS Bias Branch ---
+* Iref1 supplies 5 uA into diode-connected M8.
+* M5 mirrors M8 with ratio (W/L)5/(W/L)8 = 10/1 = 10x (50 uA)
+* M7 mirrors M8 with ratio (W/L)7/(W/L)8 = 20/1 = 20x (100 uA)
+Iref1  vdd  nbias  DC  5u
+M8  nbias  nbias  vss  vss  nmos180  W=1u  L=1u
+
+.ENDS two_stage_ota

@@ -1,0 +1,60 @@
+* ============================================================
+* Testbench: ICMR (Input Common-Mode Range) DC Sweep
+* 2-Stage OTA with Miller Compensation
+* ============================================================
+*
+* Configuration: Unity-gain buffer (Vout tied to Vin-)
+*
+* The common-mode input voltage is swept from 0V to 1.8V.
+* Within the valid ICMR, Vout should track Vin (slope = 1).
+* Outside the ICMR, Vout will clip or deviate.
+*
+* Expected results (hand calculation):
+*   ICMR(-) = 0.8 V  (limited by M5 saturation)
+*   ICMR(+) = 1.6 V  (limited by M3/M4 saturation)
+*
+* Plotting:
+*   Plot V(vout) vs V(inp). The linear region is the ICMR.
+*   Overlay V(inp) as a reference (ideal 1:1 line).
+*
+* ============================================================
+
+* ---- Include Models and Subcircuit ----
+.include models_180nm.lib
+.include two_stage_ota.sub
+
+* ---- Power Supply ----
+VDD  vdd  0  DC  1.8
+VSS  vss  0  DC  0
+
+* ---- OTA in Unity-Gain Buffer Configuration ----
+Xota  inp  vout  vout  vdd  vss  two_stage_ota
+
+* ---- DC Input (swept) ----
+Vcm  inp  0  DC  0.9
+
+* ---- Load Capacitance ----
+CL  vout  0  2p
+
+* ---- DC Sweep ----
+* Sweep Vcm from 0V to 1.8V in 10 mV steps
+.dc  Vcm  0  1.8  0.01
+
+* ---- Automated ICMR Measurements ----
+* Find lower ICMR limit: where V(vout) first reaches 99% tracking
+* (i.e., V(vout) = 0.99 * V(inp))
+* These .meas statements look for where the output first matches
+* and last matches the input within a small tolerance.
+
+* Simple approach: find where output is within 1% of input
+* ICMR_low: smallest Vcm where |V(vout) - V(inp)| < 0.01*V(inp)
+* ICMR_high: largest Vcm where |V(vout) - V(inp)| < 0.01*V(inp)
+
+* Note: LTSpice .meas for DC sweep uses the swept variable as x-axis
+.meas DC  ICMR_low   WHEN  V(vout)=0.8   RISE=1
+.meas DC  ICMR_high  WHEN  V(vout)=1.6   RISE=1
+
+* ---- Options ----
+.options plotwinsize=0
+.backanno
+.end

@@ -1,0 +1,51 @@
+* ============================================================
+* TSMC 180nm MOSFET Models (Level-1 Approximation)
+* ============================================================
+*
+* These are simplified Level-1 SPICE models for initial design
+* exploration and hand-calculation verification.
+*
+* For production-grade simulations, replace with actual
+* TSMC 180nm PDK model files (.lib / .mod).
+*
+* Key parameters used in hand calculations:
+*   NMOS: mu*Cox = 270 uA/V^2, Vth = 0.5V, lambda = 0.05/V
+*   PMOS: mu*Cox =  60 uA/V^2, Vth = 0.5V, lambda = 0.05/V
+*
+* ============================================================
+
+* ---- NMOS Transistor Model ----
+.model nmos180 NMOS (
++ LEVEL   = 1
++ VTO     = 0.5
++ KP      = 270u
++ GAMMA   = 0.45
++ PHI     = 0.65
++ LAMBDA  = 0.05
++ CBD     = 10f
++ CBS     = 10f
++ PB      = 0.8
++ CGSO    = 350p
++ CGDO    = 350p
++ CGBO    = 100p
++ TOX     = 4e-9
++ LD      = 10n
++ )
+
+* ---- PMOS Transistor Model ----
+.model pmos180 PMOS (
++ LEVEL   = 1
++ VTO     = -0.5
++ KP      = 60u
++ GAMMA   = 0.45
++ PHI     = 0.65
++ LAMBDA  = 0.05
++ CBD     = 10f
++ CBS     = 10f
++ PB      = 0.8
++ CGSO    = 350p
++ CGDO    = 350p
++ CGBO    = 100p
++ TOX     = 4e-9
++ LD      = 10n
++ )

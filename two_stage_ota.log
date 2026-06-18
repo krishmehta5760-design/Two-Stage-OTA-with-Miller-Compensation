@@ -1,0 +1,89 @@
+LTspice 24.1.10 for Windows
+Circuit: C:\Users\KRISH MEHTA\.gemini\antigravity-ide\scratch\two_stage_ota\two_stage_ota.net
+Start Time: Thu Jun 18 15:59:04 2026
+solver = Normal
+Maximum thread count: 8
+tnom = 27
+temp = 27
+method = trap
+Model "nmos180": Oxide thickness thinner than recommended for a level 1 MOSFET.
+Instance "M1": Length shorter than recommended for a level 1 MOSFET.
+Instance "M2": Length shorter than recommended for a level 1 MOSFET.
+Instance "M5": Length shorter than recommended for a level 1 MOSFET.
+Instance "M5": Width narrower than recommended for a level 1 MOSFET.
+Instance "M7": Length shorter than recommended for a level 1 MOSFET.
+Instance "M8": Length shorter than recommended for a level 1 MOSFET.
+Instance "M8": Width narrower than recommended for a level 1 MOSFET.
+Model "pmos180": Oxide thickness thinner than recommended for a level 1 MOSFET.
+Instance "M3": Length shorter than recommended for a level 1 MOSFET.
+Instance "M4": Length shorter than recommended for a level 1 MOSFET.
+Instance "M6": Length shorter than recommended for a level 1 MOSFET.
+Direct Newton iteration failed to find .op point.  (Use ".option noopiter" to skip.)
+Starting Gmin stepping
+Gmin = 10
+Gmin = 1.07374
+Gmin = 0.115292
+Gmin = 0.0123794
+Gmin = 0.00132923
+Gmin = 0.000142725
+Gmin = 1.5325e-05
+vernier = 0.5
+vernier = 0.25
+vernier = 0.125
+vernier = 0.0625
+vernier = 0.03125
+vernier = 0.015625
+vernier = 0.0078125
+Gmin = 9.80797e-06
+vernier = 0.00390625
+vernier = 0.00195312
+vernier = 0.000976562
+vernier = 0.000488281
+Gmin = 0
+Gmin stepping failed
+
+Starting source stepping with srcstepmethod=0
+Source Step = 3.0303%
+Source Step = 33.3333%
+Source Step = 63.6364%
+Source Step = 93.9394%
+Source Step = 98.2481%
+vernier = 0.00390625
+Source Step = 98.254%
+Source Step = 98.2836%
+Source Step = 98.3132%
+Source Step = 98.3428%
+Source Step = 98.3724%
+vernier = 0.00146484
+Source Step = 98.4049%
+Source Step = 98.4493%
+Source Step = 98.4937%
+Source Step = 98.5381%
+Source Step = 98.5825%
+vernier = 0.00219727
+Source Step = 98.6291%
+Source Step = 98.6957%
+Source Step = 98.7623%
+Source Step = 98.8289%
+Source Step = 98.8954%
+Source Step = 98.962%
+vernier = 0.0032959
+Source Step = 99.0619%
+Source Step = 99.1618%
+Source Step = 99.2617%
+Source Step = 99.3615%
+Source Step = 99.4614%
+vernier = 0.00494385
+Source Step = 99.6062%
+Source Step = 99.756%
+Source Step = 99.9059%
+Source stepping succeeded in finding the operating point.
+
+.step 
+Total elapsed time: 0.580 seconds.
+
+Files loaded:
+C:\Users\KRISH MEHTA\.gemini\antigravity-ide\scratch\two_stage_ota\two_stage_ota.net
+C:\Users\KRISH MEHTA\AppData\Local\LTspice\lib\cmp\standard.mos
+C:\Users\KRISH MEHTA\.gemini\antigravity-ide\scratch\two_stage_ota\models_180nm.lib
+

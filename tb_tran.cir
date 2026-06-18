@@ -1,0 +1,66 @@
+* ============================================================
+* Testbench: Transient Analysis (Slew Rate & Step Response)
+* 2-Stage OTA with Miller Compensation
+* ============================================================
+*
+* Configuration: Unity-gain buffer (Vout tied to Vin-)
+*
+* A 400 mV step (0.7V -> 1.1V) is applied at the input.
+* The amplifier slews during the fast edges, then settles.
+*
+* Expected results (hand calculation):
+*   Slew Rate (rise) ~ 20 V/us
+*   Slew Rate (fall)  ~ 20 V/us  (may differ due to asymmetry)
+*
+* Plotting:
+*   Add traces: V(inp) and V(vout) to see input vs output
+*
+* ============================================================
+
+* ---- Include Models and Subcircuit ----
+.include models_180nm.lib
+.include two_stage_ota.sub
+
+* ---- Power Supply ----
+VDD  vdd  0  DC  1.8
+VSS  vss  0  DC  0
+
+* ---- OTA in Unity-Gain Buffer Configuration ----
+* Vout is fed back directly to the inverting input (inm = vout)
+Xota  inp  vout  vout  vdd  vss  two_stage_ota
+
+* ---- Input Step Signal ----
+* PULSE(V1  V2  Td  Tr   Tf   Ton   Tperiod)
+*   V1 = 0.7V (initial), V2 = 1.1V (step target)
+*   Td = 100 ns delay
+*   Tr = 1 ns (fast rise to force slewing)
+*   Tf = 1 ns (fast fall to force slewing)
+*   Ton  = 1 us pulse width
+*   Tper = 2.5 us period
+Vstep  inp  0  PULSE(0.7 1.1 100n 1n 1n 1u 2.5u)
+
+* ---- Load Capacitance ----
+CL  vout  0  2p
+
+* ---- Transient Analysis ----
+* Simulate for 5 us to capture two full cycles
+.tran  5u
+
+* ---- Automated Slew Rate Measurements ----
+* Measure dV/dt at the output midpoint (0.9V) during transitions
+.meas TRAN  SR_rise  DERIV  V(vout)  WHEN  V(vout)=0.9  RISE=1
+.meas TRAN  SR_fall  DERIV  V(vout)  WHEN  V(vout)=0.9  FALL=1
+
+* ---- Settling Time Measurements (to 1% of final value) ----
+* Rising edge: final value = 1.1V, 1% band = 1.089V to 1.111V
+.meas TRAN  t_settle_rise  TRIG  V(inp)  VAL=0.9  RISE=1
++                          TARG  V(vout) VAL=1.089  RISE=1
+
+* Falling edge: final value = 0.7V, 1% band = 0.693V to 0.707V
+.meas TRAN  t_settle_fall  TRIG  V(inp)  VAL=0.9  FALL=1
++                          TARG  V(vout) VAL=0.707  FALL=1
+
+* ---- Options ----
+.options plotwinsize=0
+.backanno
+.end
