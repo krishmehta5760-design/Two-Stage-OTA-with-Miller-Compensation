@@ -41,4 +41,4 @@ A fully custom 2-stage Operational Transconductance Amplifier (OTA) designed fro
 This design utilizes a classic 8-transistor topology:
 *   **Stage 1:** PMOS active-load NMOS differential pair.
 *   **Stage 2:** Common-source PMOS amplifier with an NMOS current sink load.
-*   **Compensation:** Miller Compensation capacitor ($C_c = 2.5\text{pF}$) connecting the output to the output of the first stage. No nulling resistor ($R_z$) is used in this specific implementation.
+*   **Compensation:** Miller Compensation capacitor ($C_c = 2.2\text{pF}$) connecting the output to the output of the first stage. No nulling resistor ($R_z$) is used in this specific implementation.
