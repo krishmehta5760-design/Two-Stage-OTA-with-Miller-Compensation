@@ -8,7 +8,7 @@ A fully custom 2-stage Operational Transconductance Amplifier (OTA) designed fro
 | :--- | :--- | :--- |
 | **DC Gain** | $\ge 60$ dB | **93 dB** |
 | **GBW** | $30$ MHz | **30 MHz** |
-| **Phase Margin** | $\ge 60^\circ$ | **~54-60^\circ** |
+| **Phase Margin** | $\ge 60^\circ$ | **~53°** |
 | **Slew Rate** | $20$ V/µs | **20.9 V/µs** |
 | **Power Consumption** | $\le 300$ µW | **288 µW** |
 | **ICMR (Common-Mode)** | $0.8$V to $1.6$V | **0.55V to 1.8V (Verified)** |
