@@ -24,6 +24,9 @@ A fully custom 2-stage Operational Transconductance Amplifier (OTA) designed fro
 *   `tb_tran.cir` - Testbench for Transient Analysis (Slew Rate & Step Response).
 *   `tb_icmr.cir` - Testbench for DC Sweep (Input Common-Mode Range).
 
+## LTSpice Schematic
+<img width="1920" height="842" alt="image" src="https://github.com/user-attachments/assets/079c48ed-3d8e-40c3-86da-1bdcd89d938f" />
+
 ## 🚀 How to Run the Simulations
 
 1. **Clone or download** this repository.
